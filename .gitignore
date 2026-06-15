@@ -1,0 +1,29 @@
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Python cache and temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+*.swp
+*.bak
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+bin/
+lib/
+include/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Flask landing page specific temporary/cache files
+ai-attendance-project-landing/__pycache__/
+ai-attendance-project-landing/*.pyc
+ai-attendance-project-landing/.env
+ai-attendance-project-landing/venv/
+ai-attendance-project-landing/.venv/
