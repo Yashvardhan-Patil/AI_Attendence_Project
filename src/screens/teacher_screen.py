@@ -250,12 +250,19 @@ def teacher_tab_attendance_records():
 
     for r in records:
         ts = r.get('timestamp')
+        if ts:
+            dt = datetime.fromisoformat(ts)
+            ts_group = dt.strftime("%Y-%m-%dT%H:%M:%S")
+            time_display = dt.strftime("%Y-%m-%d %I:%M %p")
+        else:
+            ts_group = None
+            time_display = "N/A"
 
         data.append({
-            "ts_group": ts.split(".")[0] if ts else None,
-            "Time": datetime.fromisoformat(ts).strftime("%Y-%m-%d %I:%M %p") if ts else "N'A",
+            "ts_group": ts_group,
+            "Time": time_display,
             "Subject": r['subjects']['name'],
-            "Subject Code":r['subjects']['subject_code'],
+            "Subject Code": r['subjects']['subject_code'],
             "is_present": bool(r.get('is_present', False))
         })
 
