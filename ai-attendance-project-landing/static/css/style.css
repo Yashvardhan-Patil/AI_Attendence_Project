@@ -3,8 +3,8 @@
 
 :root {
     --bg-main: #fcfcfd;
-    --primary: #5865F2;
-    --primary-dark: #4752C4;
+    --primary: #0D9373;
+    --primary-dark: #0a7a61;
     --secondary: #EB459E;
     --text-dark: #1e293b;
     --text-muted: #64748b;
@@ -345,7 +345,7 @@ h4 {
 /* Tech Stack */
 .tech-stack {
     padding: 80px 40px;
-    background-color: #7c4dff;
+    background-color: #0D9373;
     border-radius: 60px;
     margin: 40px;
     text-align: center;

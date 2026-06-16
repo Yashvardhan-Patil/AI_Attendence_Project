@@ -1,7 +1,13 @@
+import asyncio
+import sys
+
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 import streamlit as st
 
 st.set_page_config(
-    page_title='SnapClass - Making Attendance faster using AI',
+    page_title='SmartAI Class - Making Attendance faster using AI',
     page_icon='🎓',
     layout='wide',
 )
