@@ -123,7 +123,6 @@ def student_screen():
             st.session_state.login_scan_result = {'detected': detected, 'num_faces': num_faces}
 
     result = st.session_state.get('login_scan_result')
-    show_registration = False
 
     if result:
         num_faces = result['num_faces']
@@ -131,8 +130,10 @@ def student_screen():
 
         if num_faces == 0:
             st.warning('Face not found!')
+            st.session_state.show_registration = False
         elif num_faces > 1:
             st.warning('Multiple faces found')
+            st.session_state.show_registration = False
         else:
             if detected:
                 student_id = list(detected.keys())[0]
@@ -144,13 +145,15 @@ def student_screen():
                     st.session_state.student_data = student
                     st.session_state.login_photo = None
                     st.session_state.login_scan_result = None
+                    st.session_state.show_registration = False
                     st.toast(f'Welcome Back {student["name"]}')
                     time.sleep(1)
                     st.rerun()
             else:
                 st.info('Face not recognized! You might be a new student!')
-                show_registration = True
-    if show_registration:
+                st.session_state.show_registration = True
+
+    if st.session_state.get('show_registration'):
         with st.container(border=True):
             st.header('Register new Profile')
             new_name = st.text_input("Enter your name", placeholder='E.g. John Smith')
@@ -187,6 +190,7 @@ def student_screen():
                                 st.session_state.student_data = response_data[0]
                                 st.session_state.login_photo = None
                                 st.session_state.login_scan_result = None
+                                st.session_state.show_registration = False
                                 st.toast(f'Profile Created! Hi {new_name}!')
                                 time.sleep(1)
                                 st.rerun()
