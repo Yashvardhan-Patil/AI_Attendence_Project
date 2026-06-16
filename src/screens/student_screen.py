@@ -109,36 +109,47 @@ def student_screen():
     st.markdown("## Login using FaceID")
     st.space()
     st.space()
-    
-    show_registration = False
+
     photo_source = st.camera_input("Position your face in the center")
 
     if photo_source:
-        img = np.array(Image.open(photo_source))
+        st.session_state.login_photo = photo_source
+        st.session_state.login_scan_result = None
 
+    if st.session_state.get('login_photo') and st.session_state.get('login_scan_result') is None:
+        img = np.array(Image.open(st.session_state.login_photo))
         with st.spinner('AI is scanning..'):
             detected, all_ids, num_faces = predict_attendance(img)
+            st.session_state.login_scan_result = {'detected': detected, 'num_faces': num_faces}
 
-            if num_faces == 0:
-                st.warning('Face not found!')
-            elif num_faces >1:
-                st.warning('Multiple faces found')
+    result = st.session_state.get('login_scan_result')
+    show_registration = False
+
+    if result:
+        num_faces = result['num_faces']
+        detected = result['detected']
+
+        if num_faces == 0:
+            st.warning('Face not found!')
+        elif num_faces > 1:
+            st.warning('Multiple faces found')
+        else:
+            if detected:
+                student_id = list(detected.keys())[0]
+                all_students = get_all_students()
+                student = next((s for s in all_students if s['student_id'] == student_id), None)
+                if student:
+                    st.session_state.is_logged_in = True
+                    st.session_state.user_role = 'student'
+                    st.session_state.student_data = student
+                    st.session_state.login_photo = None
+                    st.session_state.login_scan_result = None
+                    st.toast(f'Welcome Back {student["name"]}')
+                    time.sleep(1)
+                    st.rerun()
             else:
-                if detected:
-                    student_id = list(detected.keys())[0]
-                    all_students = get_all_students()
-                    student = next((s for s in all_students if s['student_id']==student_id), None)
-
-                    if student:
-                        st.session_state.is_logged_in = True
-                        st.session_state.user_role = 'student'
-                        st.session_state.student_data = student
-                        st.toast(f'Welcome Back {student["name"]}')
-                        time.sleep(1)
-                        st.rerun()
-                else:
-                    st.info('Face not recognized! You might be a new student!')
-                    show_registration = True
+                st.info('Face not recognized! You might be a new student!')
+                show_registration = True
     if show_registration:
         with st.container(border=True):
             st.header('Register new Profile')
@@ -158,8 +169,8 @@ def student_screen():
             if st.button('Create Account', type='primary'):
                 if new_name:
                     with st.spinner('Creating profile..'):
-                        img = np.array(Image.open(photo_source))
-                        encodings= get_face_embeddings(img)
+                        img = np.array(Image.open(st.session_state.login_photo))
+                        encodings = get_face_embeddings(img)
                         if encodings:
                             face_emb = encodings[0].tolist()
 
@@ -174,6 +185,8 @@ def student_screen():
                                 st.session_state.is_logged_in = True
                                 st.session_state.user_role = 'student'
                                 st.session_state.student_data = response_data[0]
+                                st.session_state.login_photo = None
+                                st.session_state.login_scan_result = None
                                 st.toast(f'Profile Created! Hi {new_name}!')
                                 time.sleep(1)
                                 st.rerun()
