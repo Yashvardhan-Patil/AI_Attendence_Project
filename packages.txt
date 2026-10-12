@@ -1,2 +1,4 @@
 cmake
 libgl1
+ffmpeg
+libsndfile1
