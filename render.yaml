@@ -1,0 +1,18 @@
+services:
+  # AI Class Main Application
+  - type: web
+    name: ai-class-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --timeout 120 app:app
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: LANDING_PAGE_URL
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PORT
+        value: 5002
